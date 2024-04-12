@@ -15,10 +15,12 @@ export async function tesseract(img) {
     img,
     'eng+chi_sim', // 使用英文引擎和中文引擎
     {
+      tessedit_char_whitelist: '+-*/=()[]~', // 设置允许识别的符号
       //配置本地资源路径，语言包的实际位置是通过langPath+'/'+lang+'.traineddata.gz'得到的，所以不要改语言包文件名
-      workerPath: "/tesseract/tesseract.js/dist/worker.min.js",
-      corePath: "/tesseract/tesseract.js-core/tesseract-core.wasm.js",
-      langPath: "/tesseract/tesseract-lang",  // TODO：prd环境下会报错
+      workerPath: '/tesseract/tesseract.js/dist/worker.min.js',
+      corePath: '/tesseract/tesseract.js-core/tesseract-core.wasm.js',
+      // TODO：prd环境下会报错
+      langPath: '/tesseract/tesseract-lang',
       logger: (m) => console.log(m),
     }
   ).then(
@@ -38,8 +40,8 @@ export async function tesseract(img) {
  * @returns {number}
  */
 export function levenshtein(str1, str2) {
-  console.log('字符串1：', str1);
-  console.log('字符串2：', str2);
+  // console.log('字符串1：', str1);
+  // console.log('字符串2：', str2);
   // 创建一个二维数组
   let matrix = [];
   // 初始化第一列和第一行

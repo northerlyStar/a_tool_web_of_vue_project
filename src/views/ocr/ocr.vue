@@ -13,6 +13,8 @@
         >
           <i class="el-icon-plus"></i>
         </el-upload>
+        <div class="item_label">标准答案 文字版</div>
+        <el-input type="textarea" v-model="textarea" placeholder="" :rows="8"></el-input>
       </div>
 
       <div class="upload_item">
@@ -32,17 +34,8 @@
 
     <div class="result_group">
       <el-button type="primary" @click="compare">对比</el-button>
-      <!-- <input type="file" @change="readFile" /> -->
-      <!-- <input type="file" @change="readFile2" /> -->
-      <!-- <button @click="compare">对比</button> -->
-      <!-- <div v-if="ocrResult">
-        OCR Result: {{ ocrResult }}
-      </div>
-      <div v-if="ocrResult2">
-        OCR Result: {{ ocrResult2 }}
-      </div> -->
-      <!-- <div>相似度：{{ like }}</div> -->
-      <el-progress v-show="getLike" type="circle" :percentage="getLike" :format="formatPercentage"></el-progress>
+      <el-progress v-show="getLike[0]" type="circle" :percentage="getLike[0]" :format="formatPercentage"></el-progress>
+      <el-progress v-show="getLike[1]" type="circle" :percentage="getLike[1]" :format="formatPercentage"></el-progress>
     </div>
 
     <el-dialog :visible.sync="dialogVisible">
@@ -61,15 +54,18 @@ export default {
       fileList1: [],
       fileList2: [],
       ocrResult: "",
+      textarea: '',
       ocrResult2: "",
-      like: 0,
+      like: [0, 0],
       dialogImageUrl: "",
       dialogVisible: false,
     };
   },
   computed: {
     getLike() {
-      return Math.round(this.like * 100000) / 1000;
+      return this.like.map((item) => {
+        return Math.round(item * 100000) / 1000;
+      });
     },
   },
   methods: {
@@ -95,29 +91,6 @@ export default {
       return '相似度: ' + e + '%';
     },
 
-    // readFile(event) {
-    //   const file = event.target.files[0];
-    //   if (!file) {
-    //     return;
-    //   }
-    //   const reader = new FileReader();
-    //   reader.onload = (e) => {
-    //     this.performOCR(e.target.result);
-    //   };
-    //   reader.readAsDataURL(file);
-    // },
-    // readFile2(event) {
-    //   const file = event.target.files[0];
-    //   if (!file) {
-    //     return;
-    //   }
-    //   const reader = new FileReader();
-    //   reader.onload = (e) => {
-    //     this.performOCR2(e.target.result);
-    //   };
-    //   reader.readAsDataURL(file);
-    // },
-
     async performOCR(image) {
       this.ocrResult = await getStr(image);
     },
@@ -126,7 +99,7 @@ export default {
     },
 
     compare() {
-      console.log(this.ocrResult, this.ocrResult2);
+      // console.log(this.ocrResult, this.ocrResult2);
       // let str1 =
       //   '[ root@node0l “| # java - version java version "1.8.0 212" Java(TM) SE Runtime Environment (build 1.8.0_212-b10) Java HotSpot(TM) 64- Bit Server VM (build 25.212-b10, mixed mode) [ rootBnodeol | # fi';
       // let str2 =
@@ -209,29 +182,54 @@ export default {
 
       this.like = averageLike;
     },
+    formatArr(arr) {
+      const a = arr.split('\n').filter((item) => item);
+      const b = a.slice(0, a.length - 1);
+      const c = b.map((item) => item.split(' ')).flat().filter((item) => !(/^\d+$/.test(item) || /(@|\^|\$|#|\.|\+|-|\*|\/|=)/.test(item)));
+      return c;
+    },
     // 分段取相似，过滤换行符号，过滤纯数字，过滤纯相同和纯不同，去除一个最大值和一个最小值
     filterMaxMinContrastEveryItem(text, text2) {
-      console.log(text.split(' '), text2.split(' '));
-      const t = text.split(' ').map((item) => item.split('\n'));
-      const t2 = text2.split(' ').map((item) => item.split('\n'));
-      const t3 = t.flat().filter((ite) => ite && !(/^(B|b|BL|\d)\d+$/.test(ite)));
-      const t4 = t2.flat().filter((ite) => ite && !(/^(B|b|BL|\d)\d+$/.test(ite)));
-      console.log(t3, t4);
+      // 图片比对图片
+      const t = this.formatArr(text);
+// jps
+// NameNode
+// NodeManager
+// ResourceManager
+// DataNode
+// SecondaryNameNode
+// Jps
+      // 文字比对图片
+      const tt = this.textarea.split('\n');
+      const t2 = this.formatArr(text2);
+
       const likeArr = t.map((a) => {
         return Math.max(...(t2.map((b) => levenshtein(a, b))));
       }).filter((like) => like !== 0);
+
+      const likeArr2 = tt.map((a) => {
+        return Math.max(...(t2.map((b) => levenshtein(a, b))));
+      }).filter((like) => like !== 0);
+
+      console.log(likeArr, likeArr2);
+
       // 最大值索引
       const maxIndex = likeArr.findIndex((like) => like == Math.max(...likeArr));
       likeArr.splice(maxIndex, 1);
       // 最小值索引
       const minIndex = likeArr.findIndex((like) => like == Math.min(...likeArr));
       likeArr.splice(minIndex, 1);
+      // 最大值索引
+      const maxIndex2 = likeArr2.findIndex((like) => like == Math.max(...likeArr2));
+      likeArr2.splice(maxIndex2, 1);
+      // 最小值索引
+      const minIndex2 = likeArr2.findIndex((like) => like == Math.min(...likeArr2));
+      likeArr2.splice(minIndex2, 1);
 
       const averageLike = likeArr.reduce((a, b) => a + b) / likeArr.length;
+      const averageLike2 = likeArr2.reduce((a, b) => a + b) / likeArr2.length;
 
-      // console.log('newLikeArr: ', likeArr);
-
-      this.like = averageLike;
+      this.like = [averageLike, averageLike2];
     },
   },
 };
