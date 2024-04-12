@@ -1,30 +1,39 @@
 <template>
   <div id="app">
     <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="1">OCR识别</el-menu-item>
+      <el-menu-item v-for="(item, index) in menu" :key="index" :index="item.index">{{ item.label }}</el-menu-item>
     </el-menu>
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <el-button type="primary">test btn</el-button>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  },
   data() {
     return {
-      activeIndex: '1',
+      activeIndex: '',
+      menu: [
+        {
+          label: '主页',
+          index: '/',
+        },
+        {
+          label: 'OCR识别',
+          index: '/ocr',
+        }
+      ],
     }
   },
   methods: {
-    handleSelect(e) {
-      console.log(e);
+    handleSelect(key) {
+      if (key === this.$route.path) {
+        return;
+      }
+      this.$router.push({
+        path: key,
+      });
     }
   },
 }
@@ -35,8 +44,8 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
