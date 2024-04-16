@@ -4,12 +4,11 @@
       <div class="upload_item">
         <div class="item_label">标准答案</div>
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="#"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
-          :auto-upload="true"
+          :auto-upload="false"
           :on-change="changeUpload1"
-          :http-request="handleHttpRequest"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -20,12 +19,11 @@
       <div class="upload_item">
         <div class="item_label">学生答案</div>
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="#"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
-          :auto-upload="true"
+          :auto-upload="false"
           :on-change="changeUpload2"
-          :http-request="handleHttpRequest2"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -51,8 +49,6 @@ export default {
   name: 'ocr-page',
   data() {
     return {
-      fileList1: [],
-      fileList2: [],
       ocrResult: "",
       textarea: '',
       ocrResult2: "",
@@ -69,19 +65,11 @@ export default {
     },
   },
   methods: {
-    changeUpload1(file, fileList) {
-      this.fileList1 = fileList;
+    changeUpload1(file) {
       this.performOCR(file.url);
     },
-    changeUpload2(file, fileList) {
-      this.fileList2 = fileList;
+    changeUpload2(file) {
       this.performOCR2(file.url);
-    },
-    handleHttpRequest() {
-      console.log('readfile: ', this.fileList1);
-    },
-    handleHttpRequest2() {
-      console.log('readfile: ', this.fileList2);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -107,15 +95,15 @@ export default {
 
       // this.like = levenshtein(this.ocrResult, this.ocrResult2);
 
-      // this.list = this.contrastEveryItem(this.ocrResult, this.ocrResult2);
+      // this.contrastEveryItem(this.ocrResult, this.ocrResult2);
 
-      // this.list = this.newContrastEveryItem(this.ocrResult, this.ocrResult2);
+      // this.newContrastEveryItem(this.ocrResult, this.ocrResult2);
 
-      // this.list = this.newNewContrastEveryItem(this.ocrResult, this.ocrResult2);
+      // this.newNewContrastEveryItem(this.ocrResult, this.ocrResult2);
 
-      // this.list = this.filterContrastEveryItem(this.ocrResult, this.ocrResult2);
+      // this.filterContrastEveryItem(this.ocrResult, this.ocrResult2);
 
-      this.list = this.filterMaxMinContrastEveryItem(this.ocrResult, this.ocrResult2);
+      this.filterMaxMinContrastEveryItem(this.ocrResult, this.ocrResult2);
     },
     // 分段取相似
     contrastEveryItem(text, text2) {
@@ -226,8 +214,8 @@ export default {
       const minIndex2 = likeArr2.findIndex((like) => like == Math.min(...likeArr2));
       likeArr2.splice(minIndex2, 1);
 
-      const averageLike = likeArr.reduce((a, b) => a + b) / likeArr.length;
-      const averageLike2 = likeArr2.reduce((a, b) => a + b) / likeArr2.length;
+      const averageLike = likeArr.length && likeArr.reduce((a, b) => a + b) / likeArr.length;
+      const averageLike2 = likeArr2.length && likeArr2.reduce((a, b) => a + b) / likeArr2.length;
 
       this.like = [averageLike, averageLike2];
     },
