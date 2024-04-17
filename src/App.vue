@@ -13,7 +13,6 @@ export default {
   name: 'App',
   data() {
     return {
-      activeIndex: '',
       menu: [
         {
           label: '主页',
@@ -27,8 +26,18 @@ export default {
           label: '平均哈希算法',
           index: '/hash',
         },
+        {
+          label: 'OpenCV矩形提取',
+          index: '/opencv',
+        },
       ],
     }
+  },
+  computed: {
+    activeIndex() {
+      const obj = this.menu.find((item) => item.index === this.$route.path);
+      return obj?.index || '/';
+    },
   },
   methods: {
     handleSelect(key) {

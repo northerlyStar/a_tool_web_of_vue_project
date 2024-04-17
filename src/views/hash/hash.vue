@@ -1,5 +1,5 @@
 <template>
-  <div class="ocr_page">
+  <div class="hash_page">
     <div class="flex_inline">
       <div class="upload_item">
         <div class="item_label">图像1</div>
@@ -45,7 +45,7 @@
 import { compressImg, createGrayscale, getHashFingerprint, hammingDistance } from "@/utils/hash.js";
 
 export default {
-  name: 'ocr-page',
+  name: 'hash-page',
   data() {
     return {
       standard: null,
@@ -123,7 +123,7 @@ export default {
 };
 </script>
 <style scoped>
-.ocr_page {
+.hash_page {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -137,18 +137,18 @@ export default {
   align-items: center;
   margin-bottom: 20px;
 }
-.ocr_page .upload_item {
+.hash_page .upload_item {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.ocr_page .upload_item .item_label {
+.hash_page .upload_item .item_label {
   margin-bottom: 10px;
   font-weight: bold;
   font-size: 1.1rem;
 }
-.ocr_page .upload_item img {
+.hash_page .upload_item img {
   flex: 1;
   width: 100%;
   height: auto;
