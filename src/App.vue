@@ -22,7 +22,11 @@ export default {
         {
           label: 'OCR识别',
           index: '/ocr',
-        }
+        },
+        {
+          label: '平均哈希算法',
+          index: '/hash',
+        },
       ],
     }
   },
