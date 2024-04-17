@@ -3,7 +3,6 @@
     <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
       <el-menu-item v-for="(item, index) in menu" :key="index" :index="item.index">{{ item.label }}</el-menu-item>
     </el-menu>
-    <img alt="Vue logo" src="./assets/logo.png">
     <router-view></router-view>
   </div>
 </template>
