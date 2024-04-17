@@ -2,7 +2,7 @@
   <div class="ocr_page">
     <div class="flex_inline">
       <div class="upload_item">
-        <div class="item_label">标准答案</div>
+        <div class="item_label">图像1</div>
         <img id="standard" src="" alt="" />
         <el-upload
           action="#"
@@ -16,7 +16,7 @@
       </div>
 
       <div class="upload_item">
-        <div class="item_label">学生答案</div>
+        <div class="item_label">图像2</div>
         <img id="student" src="" alt="" />
         <el-upload
           action="#"
